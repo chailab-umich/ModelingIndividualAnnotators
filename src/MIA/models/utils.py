@@ -16,12 +16,19 @@ def load_torch_model(ModelClass, model_path, enforce_load=True):
         state_dict = None
         device='cuda'
         if not torch.cuda.is_available():
-            state_dict = torch.load(model_path, map_location=torch.device('cpu')) # If only CPU available then need to ensure weights are mapped to CPU if it was saved from GPU model
+            state_dict = torch.load(model_path, map_location=torch.device('cpu'), weights_only=False) # If only CPU available then need to ensure weights are mapped to CPU if it was saved from GPU model
             device = 'cpu'
         else:
-            state_dict = torch.load(model_path) # If a GPU is available weight loading doesn't matter
+            state_dict = torch.load(model_path, weights_only=False) # If a GPU is available weight loading doesn't matter
         model_arguments = state_dict['model_args']
         del state_dict['model_args']
+        
+        # Filter out any parameters that are no longer supported by ModelArguments
+        # This handles backward compatibility with older saved models
+        if 'annotator_filters' in model_arguments:
+            print(f"Removing deprecated 'annotator_filters'({model_arguments['annotator_filters']}) parameter from saved model args. Remove this once all models are updated.")
+            del model_arguments['annotator_filters']
+        
         model = ModelClass(**model_arguments).to(device)
         model.load_state_dict(state_dict)
         print(f'Succesfully loaded model {model_path}')

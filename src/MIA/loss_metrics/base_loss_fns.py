@@ -1,13 +1,11 @@
 import torch
-from .metrics import ccc, cross_entropy_no_softmax
+from MIA.metrics import ccc, weighted_ccc, pearson
 
 def probability_loss(model_output, targets):
-    if type(model_output) == tuple:
-        model_output = model_output[0]
+    model_output = model_output['probability_logits']
     bs = model_output.shape[0]
     model_output = torch.log_softmax(model_output.view(bs, -1), dim=-1)
-    targets = targets[0].view(bs, -1)
-    # return torch.nn.functional.cross_entropy(model_output, targets)
+    targets = targets.view(bs, -1)
     return torch.nn.functional.cross_entropy(model_output, targets)
 
 def probability_loss_no_softmax(model_output, targets):
@@ -36,11 +34,38 @@ def ccc_loss(preds, true):
     # true = true.squeeze() + 1
     # return (true - preds).pow(2).sum()/(true*preds).sum()
 
+def pearson_loss(preds, true):
+    return torch.tensor(1) - pearson(preds, true)
+
+def weighted_ccc_loss(preds, true):
+    return torch.tensor(1) - weighted_ccc(preds, true)
+
 def kldiv(target_mean, target_var, mean, log_var):
-    target_var[target_var<1e-6] = 1e-6 # Add small epsilon when variance in target label is 0 to prevent division by 0 # Assume a variance of 1
-    # print()
-    # print('input shapes', target_mean.shape, target_var.shape, mean.shape, log_var.shape)
-    log_frac = log_var - torch.log(target_var)
-    frac = (log_var.exp() + torch.pow(mean-target_mean,2))/(target_var)
-    # print((log_frac - frac).shape, (log_frac - frac).mean(), (log_frac - frac).sum())#, log_frac, frac)
-    return ((log_frac - frac)*0.5).mean()
+    # Epsilon is fairly high but due to likert scale labels and some samples having small variance, it can cause gradients to explode with a lower epsilon
+    # likely fine anyway (think of quantization of 1-7 labels)
+    target_var[target_var<1e-4] = 1e-4 # Add small epsilon when variance in target label is 0 to prevent division by 0 # Assume a variance of 1
+
+    if target_var.device != log_var.device:
+        target_var = target_var.to(log_var.device) # Some validation tensors are too large and require moving to CPU during calculation
+
+    # https://stats.stackexchange.com/questions/7440/kl-divergence-between-two-univariate-gaussians
+    # Want to learn KL(Prediction || Target)
+    log_frac = torch.log(target_var) - log_var
+    log_var_exp = log_var.exp()
+    mean_diff_squared = torch.pow(mean-target_mean,2)
+    numerator = log_var_exp + mean_diff_squared
+    frac = numerator / target_var
+    kld_term = (log_frac + frac - 1)*0.5
+    return kld_term.mean()
+
+def cross_entropy_no_softmax(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+    """Calculate cross entropy loss without applying softmax to input.
+    
+    Args:
+        input: Input tensor
+        target: Target tensor
+        
+    Returns:
+        Cross entropy loss
+    """
+    return torch.mean(-torch.sum(target * torch.log(input), 1))

@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as f
 import math
-from AnnotatorLayer.mapper import AnnotatorMapper
+from MIA.AnnotatorLayer.mapper import AnnotatorMapper
 
 # This will one-hot encode the annotators and concatenate them to the layers
 # duplicating the layers to make a prediction per annotator present in each batch
@@ -41,7 +41,7 @@ class OneHotLayer(nn.Module):
             output_mask = torch.fill(torch.empty(batch_size, num_annotators, device=x.device), True).bool()
         else:
             # Mask should be list of boolean masks which define which annotators to enable per batch -- loop is limited to batch size iterations
-            batch_mask, weight_mask, output_mask = mask
+            batch_mask, weight_mask, output_mask, seen_annotator_mask = mask
             duplic_batch = x[batch_mask] # Will duplicate batch accordingly 
             one_hot_encodings = self.one_hot_encodings[weight_mask] # Will get corresponding number of annotator one-hot encodings 
             concat_batch = torch.cat((duplic_batch, one_hot_encodings), dim=1)

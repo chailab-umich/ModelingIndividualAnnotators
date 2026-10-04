@@ -1,0 +1,36 @@
+---
+num_labels: 4 # How many values should activation/valence be binned into
+audio_feature_type: 'microsoft/wavlm-base-plus' # What audio features should the dataset return ('raw', 'mfb', or huggingface wav2vec2 string)
+text_feature_type: 'google-bert/bert-base-uncased' # What text features should the dataset return ('raw', or huggingface BERT string)
+audio_feature_layer: 'last_hidden_state' # Supports last_hidden_state and last_three_layers, indicates which layer to return from audio feature type
+min_len: -1 # Minimum audio length (seconds)
+max_len: -1 # Maximum audio length (seconds)
+ASR:
+  permit_ASR: False # Should ASR be allowed when transcripts are missing
+  azure_secrets_path: '' # If so, provide path to azure secrets file for ASR
+SR: 16000
+iemocap_directory: '/data/public/data/IEMOCAP_full_release'
+improv_directory: '/data/public/data/MSP_IMPROV'
+podcast_directory: '/data/public/data/MSP_Podcast-1.12'
+muse_directory: '/data/public/data/MuSE'
+# Restricted file; set this to an authorized local copy when running MuSE experiments.
+muse_annotator_info_path: ''
+segmented_iemocap_directory: '/data/tavernor/mmfusion_storage/segmented_wavs'
+segmented_noisy_iemocap_directory: '/data/tavernor/mmfusion_storage/iemocap_noisy_test/wavfile_test_dataset_ALL_segmented'
+use_whisper_for_muse: True # MuSE has bad transcripts for the segmented wavs, instead use whisper transcripts
+calculate_kde: True
+num_kde_calculations: 5 # How many seeds should kde be pre-cached for?
+iemocap_description: 'The Interactive Emotional Dyadic Motion Capture (IEMOCAP) database is an acted, multimodal and multispeaker database, recently collected at SAIL lab at USC. It contains approximately 12 hours of audiovisual data, including video, speech, motion capture of face, text transcriptions. It consists of dyadic sessions where actors perform improvisations or scripted scenarios, specifically selected to elicit emotional expressions. IEMOCAP database is annotated by multiple annotators into categorical labels, such as anger, happiness, sadness, neutrality, as well as dimensional labels such as valence, activation and dominance. The detailed motion capture information, the interactive setting to elicit authentic emotions, and the size of the database make this corpus a valuable addition to the existing databases in the community for the study and modeling of multimodal and expressive human communication.'
+improv_description: 'The MSP-Improv is an acted audiovisual emotional database that explores emotional behaviors during spontaneous dyadic improvisations. The scenarios are carefully designed to elicit realistic emotions. Currently, the corpus comprises data from six dyad sessions (12 actors). The participants are UTD students from the School of Arts and Humanities, who have taken classes in Theatre and Drama and have acting experience.'
+podcast_description: 'We are building the largest naturalistic speech emotional dataset in the community. The MSP-Podcast corpus contains speech segments from podcast recordings which are perceptually annotated using crowdsourcing. The collection of this corpus is an ongoing process. Version 1.11 of the corpus has 151,654 speaking turns (237 hours and 56 mins). The proposed partition attempts to create speaker-independent datasets for Train, Development, Test1, Test2, and Test3 sets.'
+muse_description: 'We collect a dataset that we refer to as Multimodal Stressed Emotion (MuSE) to facilitate the learning of the interplay between stress and emotion. There were two sections in each recording: monologues and watching emotionally evocative videos. We measure the stress level at the beginning and end of each recording. The monologue questions and videos were specifically chosen to cover all categories of emotions. At the start of each recording, we also recorded a short one-minute clip without any additional stimuli to register the baseline state of the subject.'
+cache_datasets: True
+cache_dataset_path: 'default' # Default stores alongside config file -- will be set in the config.py method
+# Information regarding which values should be returned by the datasets
+return_activation: True
+return_valence: True
+return_dominance: False
+return_binned_results: False # Should we also return binned activation/valence/dominance
+return_annotator_info: True # Should model return mappings of annotators to their evaluation and list of annotator IDs in each sample
+return_soft_labels: True # Return soft results in addition to the aggregate ratings, batched with torch.NaN for padding when raters not consistent
+return_self_report: False

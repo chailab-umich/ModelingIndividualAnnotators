@@ -46,6 +46,11 @@ class EarlyStopping:
             save_location = os.path.join(self.model_save_loc, f'{len(self.previous_results)}_cp.ckpt')
             print(f'Best seen early stopping value, saving model to {save_location}')
             save_torch_model(model, save_location)
+            if len(self.previous_results): # If there are no values in the previous results then this is undefined
+                old_location = self.get_best_model_path()
+                if os.path.exists(old_location):
+                    print(f'Removing old best model checkpoint from {old_location}')
+                    os.remove(old_location)
 
         self.previous_results.append(value)
 

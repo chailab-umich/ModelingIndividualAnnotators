@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "description": "SHA-256 of normalized LaTeX table text retained in the published journal_results.ipynb outputs.",
+  "tables": [
+    {"cell_id": "551c858a", "table": "II", "sha256": "249701a8a241949e790f4ddd25b658910f8d9c06b2d71725ce1e314dc392ffac"},
+    {"cell_id": "33ed448d", "table": "III", "sha256": "25b5528fcb4f2f5adbf602f1a3a56574d5d65a09a095ea2d8fc1ebb24bf83c12"},
+    {"cell_id": "4002a1bc", "table": "IV", "sha256": "f865bda7ae2141b1d1c5983d7c89ac4fff2aa24bc9b387773e7d3f64b9324dd1"},
+    {"cell_id": "56459b83", "table": "V", "sha256": "1b12d69a96a24ce5081d7ac5cf9dbeff9188f939647f0a04d118a0a3a6f43f74"},
+    {"cell_id": "14e8124a", "table": "VI", "sha256": "d249282bb610720f6621d0c6e35e415e1a467ac51fb7e698df9956e5a544c8a0"},
+    {"cell_id": "0d4b5964", "table": "VII", "sha256": "7c1d606eb341aa7adc7957d342d16815ea993fb7053a425f2d19bda32fde619e"},
+    {"cell_id": "2e0eaee1", "table": "VIII", "sha256": "67abcceaa2981226adf01e09fff9581b56d6f7263d7413f52abcf8a911fb0ef3"}
+  ]
+}

@@ -1,0 +1,281 @@
+experiment_group: journal_experiments
+output_path: .output_files/journal_experiments
+
+model_defaults: &model_defaults
+  dense_layers: 2
+  layer_size: 256
+  training_precision: float32
+  kde_training_temperature: 8
+  kde_training_grid_size: 4
+  determinism: false
+  determinism_type: default
+  prob_grid_size: 4
+
+# Base experiments (all annotators - min_annotations: 1)
+experiments:
+  baseline:
+    model_type: KDE_2D
+    tasks: baseline
+    <<: *model_defaults
+
+  'baseline_podcast_1.8':
+    model_type: KDE_2D
+    tasks: baseline
+    <<: *model_defaults
+    podcast_version: "1.8"
+
+  individual_annotator:
+    model_type: individual_annotator
+    tasks: task1
+    determinism: false
+    <<: *model_defaults
+
+  individual_annotator_task1cccind:
+    model_type: individual_annotator
+    tasks: task1cccind
+    determinism: false
+    <<: *model_defaults
+
+  'individual_annotator_podcast_1.8':
+    model_type: individual_annotator
+    tasks: task1
+    <<: *model_defaults
+    podcast_version: "1.8"
+
+  individual_annotator_var:
+    model_type: individual_annotator
+    tasks: task1,task2
+    determinism: true
+    determinism_type: utterance_variance
+    <<: *model_defaults
+
+  'individual_annotator_var_podcast_1.8':
+    model_type: individual_annotator
+    tasks: task1,task2
+    determinism: true
+    determinism_type: utterance_variance
+    <<: *model_defaults
+    podcast_version: "1.8"
+
+  individual_annotator_plus:
+    model_type: individual_annotator_plus
+    tasks: task1
+    determinism: false
+    <<: *model_defaults
+
+  'individual_annotator_plus_podcast_1.8':
+    model_type: individual_annotator_plus
+    tasks: task1
+    <<: *model_defaults
+    podcast_version: "1.8"
+
+  individual_annotator_plus_with_rest:
+    model_type: individual_annotator_plus
+    tasks: task1
+    determinism: false
+    annotator_filters:
+      min_annotations: 1
+      cluster_other_annotators: true
+    <<: *model_defaults
+
+  individual_annotator_plus_var:
+    model_type: individual_annotator_plus
+    tasks: task1,task2
+    determinism: true
+    determinism_type: utterance_variance
+    <<: *model_defaults
+
+  'individual_annotator_plus_var_podcast_1.8':
+    model_type: individual_annotator_plus
+    tasks: task1,task2
+    determinism: true
+    determinism_type: utterance_variance
+    <<: *model_defaults
+    podcast_version: "1.8"
+
+  # Loop-based implementations for benchmarking
+  individual_annotator_loop:
+    model_type: individual_annotator_loop
+    tasks: task1
+    determinism: false
+    <<: *model_defaults
+
+  baseline_aggregate:
+    model_type: baseline_aggregate
+    tasks: baseline_aggregate
+    <<: *model_defaults
+
+  'baseline_aggregate_podcast_1.8':
+    model_type: baseline_aggregate
+    tasks: baseline_aggregate
+    <<: *model_defaults
+    podcast_version: "1.8"
+
+  aggregate_ground_truth:
+    model_type: aggregate_ground_truth
+    tasks: baseline_aggregate
+    determinism: false
+    disable_kde: true
+    <<: *model_defaults
+
+  # 100+ annotations experiments
+  individual_annotator_100plus:
+    model_type: individual_annotator
+    tasks: task1
+    determinism: false
+    annotator_filters:
+      min_annotations: 100
+      cluster_other_annotators: false
+    disable_kde: true
+    <<: *model_defaults
+
+  individual_annotator_var_100plus:
+    model_type: individual_annotator
+    tasks: task1,task2
+    determinism: true
+    determinism_type: utterance_variance
+    annotator_filters:
+      min_annotations: 100
+      cluster_other_annotators: false
+    disable_kde: true
+    <<: *model_defaults
+
+  individual_annotator_plus_100plus:
+    model_type: individual_annotator_plus
+    tasks: task1
+    determinism: false
+    annotator_filters:
+      min_annotations: 100
+      cluster_other_annotators: false
+    disable_kde: true
+    <<: *model_defaults
+
+  individual_annotator_plus_var_100plus:
+    model_type: individual_annotator_plus
+    tasks: task1,task2
+    determinism: true
+    determinism_type: utterance_variance
+    annotator_filters:
+      min_annotations: 100
+      cluster_other_annotators: false
+    disable_kde: true
+    <<: *model_defaults
+
+  individual_annotator_loop_100plus:
+    model_type: individual_annotator_loop
+    tasks: task1
+    determinism: false
+    annotator_filters:
+      min_annotations: 100
+      cluster_other_annotators: false
+    disable_kde: true
+    <<: *model_defaults
+
+  baseline_aggregate_100plus:
+    model_type: baseline_aggregate
+    tasks: baseline_aggregate
+    annotator_filters:
+      min_annotations: 100
+      cluster_other_annotators: false
+    disable_kde: true
+    <<: *model_defaults
+
+  # 1000+ annotations experiments
+  individual_annotator_1000plus:
+    model_type: individual_annotator
+    tasks: task1
+    determinism: false
+    annotator_filters:
+      min_annotations: 1000
+      cluster_other_annotators: false
+    disable_kde: true
+    <<: *model_defaults
+
+  individual_annotator_var_1000plus:
+    model_type: individual_annotator
+    tasks: task1,task2
+    determinism: true
+    determinism_type: utterance_variance
+    annotator_filters:
+      min_annotations: 1000
+      cluster_other_annotators: false
+    disable_kde: true
+    <<: *model_defaults
+
+  individual_annotator_plus_1000plus:
+    model_type: individual_annotator_plus
+    tasks: task1
+    determinism: false
+    annotator_filters:
+      min_annotations: 1000
+      cluster_other_annotators: false
+    disable_kde: true
+    <<: *model_defaults
+
+  individual_annotator_plus_var_1000plus:
+    model_type: individual_annotator_plus
+    tasks: task1,task2
+    determinism: true
+    determinism_type: utterance_variance
+    annotator_filters:
+      min_annotations: 1000
+      cluster_other_annotators: false
+    disable_kde: true
+    <<: *model_defaults
+
+  individual_annotator_loop_1000plus:
+    model_type: individual_annotator_loop
+    tasks: task1
+    determinism: false
+    annotator_filters:
+      min_annotations: 1000
+      cluster_other_annotators: false
+    disable_kde: true
+    <<: *model_defaults
+
+  baseline_aggregate_1000plus:
+    model_type: baseline_aggregate
+    tasks: baseline_aggregate
+    annotator_filters:
+      min_annotations: 1000
+      cluster_other_annotators: false
+    disable_kde: true
+    <<: *model_defaults
+
+training:
+  batch_size: 32
+  max_epochs: 500
+  toy_dataset: false
+  test_only: false
+  podcast_version: "1.11"
+  finetune_on: null
+  number_of_seeds: 5
+  benchmarking: false
+  all_annotators_zeroshot: false
+
+data:
+  regenerate_kde_labels: false
+  min_annotations: 1
+  cluster_other_annotators: false
+  # Options for unseen_annotator_strategy (validation enforced):
+  # - null (default: auto-select strategies based on model type)
+  #   * Individual annotator models: similarity
+  #   * Individual annotator plus models: similarity + aggregate-annotator
+  # - 'aggregate-annotator' (requires INDIVIDUAL_ANNOTATOR_PLUS model type) 
+  # - 'first' (use first available annotator - works with any model)
+  # - 'similarity' (compute CCC-based similarity like finetuning - works with any model)
+  # - specific annotator name (e.g., 'ANN001' - must exist in trained model)
+  unseen_annotator_strategy: null  # Auto-select multiple strategies (recommended)
+
+finetune_settings:
+  random_map_settings:
+    - true
+    - false
+  num_annotators:
+    - 1
+    - 2
+    - 5
+    - 15
+    - 30
+  samples_to_use: all
+  max_epochs: null
